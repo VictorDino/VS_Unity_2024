@@ -5,106 +5,90 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    public Transform player; // Referencia al jugador
-    public float detectionRadius = 10f; // Radio de detección para el jugador
-    public float stopChaseDistance = 15f; // Distancia a la que el enemigo deja de perseguir
-    public LayerMask playerLayer; // Para detectar al jugador
-    public Transform[] patrolPoints; // Puntos de patrullaje
-    public float patrolWaitTime = 2f; // Tiempo de espera en cada punto de patrullaje
-    public float patrolPointReachDistance = 1f; // Distancia para considerar que llegó al punto de patrullaje
+    public Transform player;
+    public Transform patrolPoint1;
+    public Transform patrolPoint2;
+    public float detectionRadius = 10f;
+    public float stopChaseDistance = 15f;
+    public Animator animator;
 
     private NavMeshAgent agent;
-    private int currentPatrolIndex = 0;
+    private Transform currentPatrolTarget;
     private bool isChasing = false;
-    private bool isPlayerTransformed = false; // Saber si el jugador está transformado
-    private float patrolWaitTimer;
-    private bool waitingAtPoint = false; // Saber si está esperando en un punto de patrullaje
+    private bool isPlayerTransformed = false;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        patrolWaitTimer = patrolWaitTime;
 
-        // Verificar si hay puntos de patrullaje asignados
-        if (patrolPoints.Length > 0)
+        if (agent == null || player == null || patrolPoint1 == null || patrolPoint2 == null)
         {
-            Debug.Log("Iniciando patrullaje. Moviéndose al primer punto.");
-            agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+            Debug.LogError("Faltan referencias en EnemyController. Verifica el Inspector.");
+            return;
         }
-        else
-        {
-            Debug.LogWarning("No se asignaron puntos de patrullaje.");
-        }
+
+        currentPatrolTarget = patrolPoint1;
+        agent.SetDestination(currentPatrolTarget.position);
+        animator.SetFloat("Speed", 0);
     }
 
     void Update()
     {
-        if (!isChasing)
+        if (isPlayerTransformed)
         {
             Patrol();
+            return;
+        }
+
+        if (isChasing)
+        {
+            ChasePlayer();
         }
         else
         {
-            if (isPlayerTransformed)
+            if (PlayerInRadius())
             {
-                StopChasingPlayer();
+                StartChasingPlayer();
             }
             else
             {
-                ChasePlayer();
+                Patrol();
             }
-        }
-
-        if (!isPlayerTransformed && !isChasing && PlayerInSight())
-        {
-            StartChasingPlayer();
         }
     }
 
     void Patrol()
     {
-        if (patrolPoints.Length == 0) return; // Si no hay puntos, no hacer nada
-
-        // Calcular la distancia manualmente entre el enemigo y el punto de patrullaje
-        float distanceToPatrolPoint = Vector3.Distance(transform.position, patrolPoints[currentPatrolIndex].position);
-
-        // Verificar si ha llegado al punto de patrullaje
-        if (!waitingAtPoint && distanceToPatrolPoint <= patrolPointReachDistance)
+        if (Vector3.Distance(transform.position, currentPatrolTarget.position) <= agent.stoppingDistance + 0.5f)
         {
-            // Iniciar la espera en el punto de patrullaje
-            waitingAtPoint = true;
-            patrolWaitTimer = patrolWaitTime;
-
-            Debug.Log("En el punto de patrullaje: " + currentPatrolIndex + ". Esperando " + patrolWaitTime + " segundos.");
+            Debug.Log($"Patrullaje: alcanzado {currentPatrolTarget.name}. Cambiando de punto.");
+            currentPatrolTarget = currentPatrolTarget == patrolPoint1 ? patrolPoint2 : patrolPoint1;
+            agent.SetDestination(currentPatrolTarget.position);
         }
 
-        // Mientras espera, reducir el temporizador
-        if (waitingAtPoint)
+        animator.SetFloat("Speed", agent.velocity.magnitude > 0.1f ? 1 : 0);
+
+        if (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
         {
-            patrolWaitTimer -= Time.deltaTime;
-            if (patrolWaitTimer <= 0f)
-            {
-                waitingAtPoint = false;
-
-                // Mover al siguiente punto de patrullaje
-                currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
-                agent.SetDestination(patrolPoints[currentPatrolIndex].position);
-
-                Debug.Log("Moviéndose al siguiente punto de patrullaje: " + currentPatrolIndex);
-            }
+            animator.SetFloat("Speed", 1); // En movimiento
+        }
+        else
+        {
+            animator.SetFloat("Speed", 0); // En Idle
         }
     }
 
     void StartChasingPlayer()
     {
         isChasing = true;
-        Debug.Log("Comenzando a perseguir al jugador.");
-        agent.SetDestination(player.position);
+        Debug.Log("El enemigo comienza a perseguir al jugador.");
+        animator.SetFloat("Speed", 1);
     }
 
     void ChasePlayer()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
         if (distanceToPlayer <= stopChaseDistance)
         {
             agent.SetDestination(player.position);
@@ -118,21 +102,13 @@ public class EnemyController : MonoBehaviour
     void StopChasingPlayer()
     {
         isChasing = false;
-        agent.SetDestination(patrolPoints[currentPatrolIndex].position);
-        Debug.Log("Dejando de perseguir al jugador. Volviendo a patrullar.");
+        Debug.Log("El enemigo deja de perseguir al jugador y vuelve a patrullar.");
+        agent.SetDestination(currentPatrolTarget.position);
     }
 
-    bool PlayerInSight()
+    bool PlayerInRadius()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
-        foreach (Collider hitCollider in hitColliders)
-        {
-            if (hitCollider.transform == player)
-            {
-                return true;
-            }
-        }
-        return false;
+        return Vector3.Distance(transform.position, player.position) <= detectionRadius;
     }
 
     public void OnPlayerTransformed()
