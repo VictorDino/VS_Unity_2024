@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638665050368534709
-    m_Hash: 3155578867
+      ticks: 638695255665320557
+    m_Hash: 1681960142
   m_LockFileStatus:
     m_FilePath: C:/Users/Victor/Documents/GitHub/VS_Unity_2024/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638665050368584872
-    m_Hash: 717118903
+      ticks: 638695255665320557
+    m_Hash: 441505478
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:

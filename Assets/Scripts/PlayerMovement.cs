@@ -23,36 +23,46 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
 
-        
-        if (isGrounded && velocity.y < 0)
+        // Verificar si el CharacterController está activo
+        if (!controller.enabled)
         {
-            velocity.y = -2f; 
+            return; // No ejecutar el movimiento si el CharacterController está desactivado
         }
 
-        
-        float x = Input.GetAxis("Horizontal"); 
-        float z = Input.GetAxis("Vertical");   
+        // Comprobar si está en el suelo usando un Raycast
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance);
 
-   
+        // Resetear la velocidad en Y si está en el suelo
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
+
+        // Obtener entradas del teclado
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        // Crear un vector de movimiento en el plano XZ
         Vector3 move = new Vector3(x, 0, z);
 
         if (move.magnitude > 0.1f)
         {
-            Vector3 moveDirection = move.normalized; 
-            Quaternion toRotation = Quaternion.LookRotation(moveDirection, Vector3.up); 
-            transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime); 
+            // Rotar el jugador hacia la dirección del movimiento
+            Vector3 moveDirection = move.normalized;
+            Quaternion toRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
 
+        // Mover al jugador usando el CharacterController
         controller.Move(move * speed * Time.deltaTime);
 
+        // Aplicar la gravedad
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+        // Actualizar animación
         float movementMagnitude = move.magnitude;
-
         animator.SetFloat("Speed", movementMagnitude);
     }
 }

@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - TranformableMask
+  - Light
+  - Particles
+  - Sound
   layers:
   - Default
   - TransparentFX

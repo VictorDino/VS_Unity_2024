@@ -5,6 +5,9 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
+    public enum EnemyType { Sound, Particles, Light } // Tipos de enemigo
+    public EnemyType enemyType; // Tipo del enemigo actual
+
     public Transform player;
     public Transform patrolPoint1;
     public Transform patrolPoint2;
@@ -12,10 +15,14 @@ public class EnemyController : MonoBehaviour
     public float stopChaseDistance = 15f;
     public Animator animator;
 
+    public GameObject exclamationHUD; // Imagen de exclamación
+    public GameObject questionHUD; // Imagen de interrogación
+
     private NavMeshAgent agent;
     private Transform currentPatrolTarget;
     private bool isChasing = false;
     private bool isPlayerTransformed = false;
+    private bool isVigilating = false;
 
     void Start()
     {
@@ -30,10 +37,20 @@ public class EnemyController : MonoBehaviour
         currentPatrolTarget = patrolPoint1;
         agent.SetDestination(currentPatrolTarget.position);
         animator.SetFloat("Speed", 0);
+
+        // Asegurarse de que los HUD estén desactivados al inicio
+        if (exclamationHUD) exclamationHUD.SetActive(false);
+        if (questionHUD) questionHUD.SetActive(false);
     }
 
     void Update()
     {
+        if (isVigilating)
+        {
+            ShowQuestionHUD();
+            return;
+        }
+
         if (isPlayerTransformed)
         {
             Patrol();
@@ -42,10 +59,12 @@ public class EnemyController : MonoBehaviour
 
         if (isChasing)
         {
+            ShowExclamationHUD();
             ChasePlayer();
         }
         else
         {
+            HideAllHUD();
             if (PlayerInRadius())
             {
                 StartChasingPlayer();
@@ -55,34 +74,32 @@ public class EnemyController : MonoBehaviour
                 Patrol();
             }
         }
+
+        if (Vector3.Distance(transform.position, player.position) <= agent.stoppingDistance)
+        {
+            DealDamageToPlayer();
+        }
     }
 
     void Patrol()
     {
-        if (Vector3.Distance(transform.position, currentPatrolTarget.position) <= agent.stoppingDistance + 0.5f)
+        if (agent.remainingDistance <= agent.stoppingDistance)
         {
-            Debug.Log($"Patrullaje: alcanzado {currentPatrolTarget.name}. Cambiando de punto.");
+            // Cambiar al siguiente punto de patrullaje
             currentPatrolTarget = currentPatrolTarget == patrolPoint1 ? patrolPoint2 : patrolPoint1;
             agent.SetDestination(currentPatrolTarget.position);
         }
 
-        animator.SetFloat("Speed", agent.velocity.magnitude > 0.1f ? 1 : 0);
-
-        if (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
-        {
-            animator.SetFloat("Speed", 1); // En movimiento
-        }
-        else
-        {
-            animator.SetFloat("Speed", 0); // En Idle
-        }
+        // Controlar la animación
+        animator.SetFloat("Speed", agent.remainingDistance > agent.stoppingDistance ? 1 : 0);
     }
 
     void StartChasingPlayer()
     {
         isChasing = true;
-        Debug.Log("El enemigo comienza a perseguir al jugador.");
+        ShowExclamationHUD();
         animator.SetFloat("Speed", 1);
+        Debug.Log("El enemigo comienza a perseguir al jugador.");
     }
 
     void ChasePlayer()
@@ -102,8 +119,9 @@ public class EnemyController : MonoBehaviour
     void StopChasingPlayer()
     {
         isChasing = false;
-        Debug.Log("El enemigo deja de perseguir al jugador y vuelve a patrullar.");
+        HideAllHUD();
         agent.SetDestination(currentPatrolTarget.position);
+        Debug.Log("El enemigo deja de perseguir al jugador y vuelve a patrullar.");
     }
 
     bool PlayerInRadius()
@@ -120,6 +138,105 @@ public class EnemyController : MonoBehaviour
     public void OnPlayerReverted()
     {
         isPlayerTransformed = false;
+    }
+
+    public void ReactToInteraction(string interactionType, Transform objectToVigilate, float duration)
+    {
+        if ((enemyType == EnemyType.Sound && interactionType == "Sound") ||
+            (enemyType == EnemyType.Particles && interactionType == "Particles") ||
+            (enemyType == EnemyType.Light && interactionType == "Light"))
+        {
+            VigilateObject(objectToVigilate, duration);
+        }
+    }
+
+    public void VigilateObject(Transform objectToVigilate, float duration)
+    {
+        StartCoroutine(VigilateRoutine(objectToVigilate, duration));
+    }
+
+    private IEnumerator VigilateRoutine(Transform objectToVigilate, float duration)
+    {
+        isVigilating = true;
+        ShowQuestionHUD();
+        Debug.Log("Enemigo vigilando el objeto: " + objectToVigilate.name);
+
+        agent.SetDestination(objectToVigilate.position);
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (agent.remainingDistance <= agent.stoppingDistance)
+            {
+                agent.isStopped = true;
+                animator.SetFloat("Speed", 0); // Animación Idle
+            }
+            else
+            {
+                agent.isStopped = false;
+                animator.SetFloat("Speed", 1); // Animación Walk
+            }
+
+            yield return null;
+        }
+
+        Debug.Log("Enemigo deja de vigilar el objeto y vuelve a patrullar.");
+
+        isVigilating = false;
+        agent.isStopped = false;
+        HideAllHUD();
+
+        if (!isChasing)
+        {
+            currentPatrolTarget = Vector3.Distance(transform.position, patrolPoint1.position) <
+                                  Vector3.Distance(transform.position, patrolPoint2.position)
+                ? patrolPoint1
+                : patrolPoint2;
+
+            agent.SetDestination(currentPatrolTarget.position);
+        }
+    }
+
+    void ShowExclamationHUD()
+    {
+        if (exclamationHUD) exclamationHUD.SetActive(true);
+        if (questionHUD) questionHUD.SetActive(false);
+    }
+
+    void ShowQuestionHUD()
+    {
+        if (exclamationHUD) exclamationHUD.SetActive(false);
+        if (questionHUD) questionHUD.SetActive(true);
+    }
+
+    void HideAllHUD()
+    {
+        if (exclamationHUD) exclamationHUD.SetActive(false);
+        if (questionHUD) questionHUD.SetActive(false);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage();
+            }
+        }
+    }
+
+    private void DealDamageToPlayer()
+    {
+        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+        if (playerHealth != null ) // Verifica invulnerabilidad
+        {
+            playerHealth.TakeDamage();
+        }
     }
 
     void OnDrawGizmosSelected()
