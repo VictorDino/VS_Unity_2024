@@ -6,9 +6,7 @@ public class PlayerInteractions : MonoBehaviour
 {
     public LayerMask transformableLayer; // Capa de objetos transformables
     public float transformationRadius = 5f; // Radio para buscar objetos transformables
-    public KeyCode transformKey = KeyCode.T; // Tecla para transformarse
-    public EnemyController enemyController; // Referencia al EnemyController
-    public KeyCode interactionKey = KeyCode.F; // Tecla para interactuar con el objeto transformado
+    public Material emissionMaterial; // Material con emisión para destacar objetos
 
     private GameObject transformedObject; // Objeto en el que se transforma el jugador
     private bool isTransformed = false; // Estado de transformación
@@ -18,18 +16,21 @@ public class PlayerInteractions : MonoBehaviour
 
     private Vector3 originalPosition; // Posición original del jugador
 
+    private List<EnemyController> enemies = new List<EnemyController>(); // Lista de enemigos
+    private Dictionary<GameObject, Material> originalMaterials = new Dictionary<GameObject, Material>(); // Guardar materiales originales
+
     void Start()
     {
-        // Obtener el Renderer del jugador
         playerRenderer = GetComponentInChildren<Renderer>();
-
-        // Obtener el CharacterController
         characterController = GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(transformKey))
+        HighlightNearbyObjects();
+
+        // Transformar o revertir con el clic izquierdo del ratón
+        if (Input.GetMouseButtonDown(0))
         {
             if (isTransformed)
             {
@@ -41,10 +42,65 @@ public class PlayerInteractions : MonoBehaviour
             }
         }
 
-        if (isTransformed && Input.GetKeyDown(interactionKey))
+        // Interactuar con el clic derecho del ratón
+        if (isTransformed && Input.GetMouseButtonDown(1))
         {
             InteractWithTransformedObject();
         }
+    }
+
+    void HighlightNearbyObjects()
+    {
+        Collider[] nearbyObjects = Physics.OverlapSphere(transform.position, transformationRadius, transformableLayer);
+
+        // Lista temporal para almacenar los objetos que ya no están en el radio
+        List<GameObject> objectsToRemove = new List<GameObject>();
+
+        // Identificar los objetos que deben restaurar su material
+        foreach (var obj in originalMaterials.Keys)
+        {
+            // Excluir el objeto transformado
+            if (!System.Array.Exists(nearbyObjects, col => col.gameObject == obj) || obj == transformedObject)
+            {
+                objectsToRemove.Add(obj);
+            }
+        }
+
+        // Restaurar materiales fuera del bucle principal
+        foreach (var obj in objectsToRemove)
+        {
+            RestoreOriginalMaterial(obj);
+        }
+
+        // Activar material de emisión en los objetos cercanos
+        foreach (Collider col in nearbyObjects)
+        {
+            GameObject obj = col.gameObject;
+            if (!originalMaterials.ContainsKey(obj) && obj != transformedObject) // Excluir el objeto transformado
+            {
+                StoreAndApplyEmissionMaterial(obj);
+            }
+        }
+    }
+
+    void StoreAndApplyEmissionMaterial(GameObject obj)
+    {
+        Renderer renderer = obj.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            originalMaterials[obj] = renderer.material; // Guardar el material original
+            renderer.material = emissionMaterial; // Aplicar el material con emisión
+        }
+    }
+
+    void RestoreOriginalMaterial(GameObject obj)
+    {
+        Renderer renderer = obj.GetComponent<Renderer>();
+        if (renderer != null && originalMaterials.ContainsKey(obj))
+        {
+            renderer.material = originalMaterials[obj]; // Restaurar el material original
+        }
+        originalMaterials.Remove(obj); // Eliminar de la lista
     }
 
     void TransformToObject()
@@ -55,20 +111,20 @@ public class PlayerInteractions : MonoBehaviour
         {
             transformedObject = nearbyObjects[0].gameObject;
 
-            // Guardar la posición original
+            // Restaurar el material original del objeto transformado si estaba resaltado
+            if (originalMaterials.ContainsKey(transformedObject))
+            {
+                RestoreOriginalMaterial(transformedObject);
+            }
+
             originalPosition = transform.position;
-
-            // Ocultar el modelo del jugador
             playerRenderer.enabled = false;
-
-            // Desactivar el CharacterController para que no pueda moverse
             characterController.enabled = false;
 
             isTransformed = true;
             Debug.Log("Jugador transformado en: " + transformedObject.name);
 
-            // Notificar al enemigo
-            enemyController?.OnPlayerTransformed();
+            NotifyEnemies(true);
         }
         else
         {
@@ -80,20 +136,14 @@ public class PlayerInteractions : MonoBehaviour
     {
         if (isTransformed)
         {
-            // Mostrar el modelo del jugador
             playerRenderer.enabled = true;
-
-            // Reactivar el CharacterController
             characterController.enabled = true;
-
-            // Volver a la posición original
             transform.position = originalPosition;
 
             isTransformed = false;
             Debug.Log("Jugador ha vuelto a su forma original.");
 
-            // Notificar al enemigo
-            enemyController?.OnPlayerReverted();
+            NotifyEnemies(false);
         }
         else
         {
@@ -129,11 +179,41 @@ public class PlayerInteractions : MonoBehaviour
 
         if (!string.IsNullOrEmpty(interactionType))
         {
-            EnemyController[] enemies = FindObjectsOfType<EnemyController>();
             foreach (EnemyController enemy in enemies)
             {
                 enemy.ReactToInteraction(interactionType, transformedObject.transform, 5f);
             }
+        }
+    }
+
+    void NotifyEnemies(bool transformed)
+    {
+        foreach (EnemyController enemy in enemies)
+        {
+            if (transformed)
+            {
+                enemy.OnPlayerTransformed();
+            }
+            else
+            {
+                enemy.OnPlayerReverted();
+            }
+        }
+    }
+
+    public void RegisterEnemy(EnemyController enemy)
+    {
+        if (!enemies.Contains(enemy))
+        {
+            enemies.Add(enemy);
+        }
+    }
+
+    public void UnregisterEnemy(EnemyController enemy)
+    {
+        if (enemies.Contains(enemy))
+        {
+            enemies.Remove(enemy);
         }
     }
 
@@ -143,4 +223,3 @@ public class PlayerInteractions : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, transformationRadius);
     }
 }
-

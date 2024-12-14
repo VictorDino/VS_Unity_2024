@@ -218,6 +218,24 @@ public class EnemyController : MonoBehaviour
         if (questionHUD) questionHUD.SetActive(false);
     }
 
+    void OnEnable()
+    {
+        PlayerInteractions player = FindObjectOfType<PlayerInteractions>();
+        if (player != null)
+        {
+            player.RegisterEnemy(this);
+        }
+    }
+
+    void OnDisable()
+    {
+        PlayerInteractions player = FindObjectOfType<PlayerInteractions>();
+        if (player != null)
+        {
+            player.UnregisterEnemy(this);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
