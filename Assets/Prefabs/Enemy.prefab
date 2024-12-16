@@ -2872,7 +2872,7 @@ Transform:
   - {fileID: 3624341417057215452}
   - {fileID: 8272674640763102833}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6762934719159067014
 Animator:
@@ -2934,7 +2934,8 @@ MonoBehaviour:
   player: {fileID: 0}
   patrolPoint1: {fileID: 0}
   patrolPoint2: {fileID: 0}
-  detectionRadius: 5
+  playerDetectionRadius: 10
+  interactionDetectionRadius: 8
   stopChaseDistance: 15
   animator: {fileID: 6762934719159067014}
   exclamationHUD: {fileID: 3564331290773484016}

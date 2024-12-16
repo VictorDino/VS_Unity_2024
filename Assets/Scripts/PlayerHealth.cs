@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
     public int maxLives = 3; // Número máximo de vidas
     public Image[] lifeIcons; // Iconos de los corazones en el HUD
     public float damageCooldown = 10f; // Tiempo de espera entre daños consecutivos
+    public Image bloodEffect; // Imagen del efecto de sangre en el HUD
+    public float bloodEffectDuration = 0.5f; // Duración del efecto de sangre
 
     private int currentLives; // Vidas actuales del jugador
     public bool isInvulnerable = false; // Si el jugador es invulnerable
@@ -16,11 +19,11 @@ public class PlayerHealth : MonoBehaviour
     {
         currentLives = maxLives;
         UpdateLifeIcons();
-    }
 
-    void Update()
-    {
-        Debug.Log(currentLives);
+        if (bloodEffect != null)
+        {
+            bloodEffect.gameObject.SetActive(false); // Asegurarse de que el efecto esté desactivado al inicio
+        }
     }
 
     public void TakeDamage()
@@ -30,6 +33,11 @@ public class PlayerHealth : MonoBehaviour
         currentLives--;
 
         UpdateLifeIcons();
+
+        if (bloodEffect != null)
+        {
+            StartCoroutine(ShowBloodEffect());
+        }
 
         if (currentLives <= 0)
         {
@@ -65,5 +73,11 @@ public class PlayerHealth : MonoBehaviour
             }
         }
     }
-}
 
+    private IEnumerator ShowBloodEffect()
+    {
+        bloodEffect.gameObject.SetActive(true); // Mostrar el efecto de sangre
+        yield return new WaitForSeconds(bloodEffectDuration);
+        bloodEffect.gameObject.SetActive(false); // Ocultar el efecto de sangre
+    }
+}

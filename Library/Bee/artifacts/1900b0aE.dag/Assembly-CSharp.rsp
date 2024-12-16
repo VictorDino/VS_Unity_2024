@@ -341,13 +341,17 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.3f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/ActivationPlatform.cs"
 "Assets/Scripts/CameraFollow.cs"
+"Assets/Scripts/DoorController.cs"
 "Assets/Scripts/EnemyController.cs"
 "Assets/Scripts/InteractablesHUD.cs"
+"Assets/Scripts/KeyInteraction.cs"
 "Assets/Scripts/MainMenu.cs"
 "Assets/Scripts/ObjectInteract.cs"
 "Assets/Scripts/PlayerHealth.cs"
 "Assets/Scripts/PlayerInteractions.cs"
+"Assets/Scripts/PlayerKeyManager.cs"
 "Assets/Scripts/PlayerMovement.cs"
+"Assets/Scripts/SceneTransition.cs"
 -langversion:9.0
 
 /deterministic

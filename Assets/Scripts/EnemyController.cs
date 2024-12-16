@@ -5,21 +5,21 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    public enum EnemyType { Sound, Particles, Light } // Tipos de enemigo
-    public EnemyType enemyType; // Tipo del enemigo actual
+    public enum EnemyType { Sound, Particles, Light, Basic }
+    public EnemyType enemyType;
 
     public Transform player;
-    public Transform patrolPoint1;
-    public Transform patrolPoint2;
-    public float detectionRadius = 10f;
-    public float stopChaseDistance = 15f;
+    public Transform[] patrolPoints; // Puntos de patrullaje
+    public float detectionRadius = 10f; // Radio para detectar al jugador
+    public float interactionRadius = 15f; // Radio para reaccionar a interacciones
+    public float stopChaseDistance = 15f; // Distancia para dejar de perseguir al jugador
     public Animator animator;
 
-    public GameObject exclamationHUD; // Imagen de exclamación
-    public GameObject questionHUD; // Imagen de interrogación
+    public GameObject exclamationHUD; // HUD de persecución
+    public GameObject questionHUD; // HUD de vigilancia
 
     private NavMeshAgent agent;
-    private Transform currentPatrolTarget;
+    private int currentPatrolIndex = 0;
     private bool isChasing = false;
     private bool isPlayerTransformed = false;
     private bool isVigilating = false;
@@ -28,19 +28,16 @@ public class EnemyController : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
 
-        if (agent == null || player == null || patrolPoint1 == null || patrolPoint2 == null)
+        if (patrolPoints.Length == 0)
         {
-            Debug.LogError("Faltan referencias en EnemyController. Verifica el Inspector.");
+            Debug.LogError("No hay puntos de patrullaje asignados en " + gameObject.name);
             return;
         }
 
-        currentPatrolTarget = patrolPoint1;
-        agent.SetDestination(currentPatrolTarget.position);
+        agent.SetDestination(patrolPoints[currentPatrolIndex].position);
         animator.SetFloat("Speed", 0);
 
-        // Asegurarse de que los HUD estén desactivados al inicio
-        if (exclamationHUD) exclamationHUD.SetActive(false);
-        if (questionHUD) questionHUD.SetActive(false);
+        HideAllHUD();
     }
 
     void Update()
@@ -61,11 +58,16 @@ public class EnemyController : MonoBehaviour
         {
             ShowExclamationHUD();
             ChasePlayer();
+
+            if (Vector3.Distance(transform.position, player.position) <= agent.stoppingDistance)
+            {
+                DealDamageToPlayer();
+            }
         }
         else
         {
             HideAllHUD();
-            if (PlayerInRadius())
+            if (PlayerInDetectionRadius())
             {
                 StartChasingPlayer();
             }
@@ -74,23 +76,18 @@ public class EnemyController : MonoBehaviour
                 Patrol();
             }
         }
-
-        if (Vector3.Distance(transform.position, player.position) <= agent.stoppingDistance)
-        {
-            DealDamageToPlayer();
-        }
     }
 
     void Patrol()
     {
+        if (patrolPoints.Length == 0) return;
+
         if (agent.remainingDistance <= agent.stoppingDistance)
         {
-            // Cambiar al siguiente punto de patrullaje
-            currentPatrolTarget = currentPatrolTarget == patrolPoint1 ? patrolPoint2 : patrolPoint1;
-            agent.SetDestination(currentPatrolTarget.position);
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+            agent.SetDestination(patrolPoints[currentPatrolIndex].position);
         }
 
-        // Controlar la animación
         animator.SetFloat("Speed", agent.remainingDistance > agent.stoppingDistance ? 1 : 0);
     }
 
@@ -99,7 +96,6 @@ public class EnemyController : MonoBehaviour
         isChasing = true;
         ShowExclamationHUD();
         animator.SetFloat("Speed", 1);
-        Debug.Log("El enemigo comienza a perseguir al jugador.");
     }
 
     void ChasePlayer()
@@ -120,11 +116,13 @@ public class EnemyController : MonoBehaviour
     {
         isChasing = false;
         HideAllHUD();
-        agent.SetDestination(currentPatrolTarget.position);
-        Debug.Log("El enemigo deja de perseguir al jugador y vuelve a patrullar.");
+        if (patrolPoints.Length > 0)
+        {
+            agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+        }
     }
 
-    bool PlayerInRadius()
+    bool PlayerInDetectionRadius()
     {
         return Vector3.Distance(transform.position, player.position) <= detectionRadius;
     }
@@ -142,16 +140,25 @@ public class EnemyController : MonoBehaviour
 
     public void ReactToInteraction(string interactionType, Transform objectToVigilate, float duration)
     {
+        if (enemyType == EnemyType.Basic) return;
+
+        float distanceToObject = Vector3.Distance(transform.position, objectToVigilate.position);
+
+        if (distanceToObject > interactionRadius) return; // No reaccionar si está fuera del rango de interacción
+
         if ((enemyType == EnemyType.Sound && interactionType == "Sound") ||
             (enemyType == EnemyType.Particles && interactionType == "Particles") ||
             (enemyType == EnemyType.Light && interactionType == "Light"))
         {
+            Debug.Log($"Enemigo {enemyType} reaccionando a {interactionType}");
             VigilateObject(objectToVigilate, duration);
         }
     }
 
     public void VigilateObject(Transform objectToVigilate, float duration)
     {
+        if (enemyType == EnemyType.Basic) return;
+
         StartCoroutine(VigilateRoutine(objectToVigilate, duration));
     }
 
@@ -159,7 +166,6 @@ public class EnemyController : MonoBehaviour
     {
         isVigilating = true;
         ShowQuestionHUD();
-        Debug.Log("Enemigo vigilando el objeto: " + objectToVigilate.name);
 
         agent.SetDestination(objectToVigilate.position);
 
@@ -183,20 +189,23 @@ public class EnemyController : MonoBehaviour
             yield return null;
         }
 
-        Debug.Log("Enemigo deja de vigilar el objeto y vuelve a patrullar.");
-
         isVigilating = false;
         agent.isStopped = false;
         HideAllHUD();
 
-        if (!isChasing)
+        if (!isChasing && patrolPoints.Length > 0)
         {
-            currentPatrolTarget = Vector3.Distance(transform.position, patrolPoint1.position) <
-                                  Vector3.Distance(transform.position, patrolPoint2.position)
-                ? patrolPoint1
-                : patrolPoint2;
+            agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+        }
+    }
 
-            agent.SetDestination(currentPatrolTarget.position);
+    private void DealDamageToPlayer()
+    {
+        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
+        if (playerHealth != null && !playerHealth.isInvulnerable) // Solo inflige daño si el jugador no es invulnerable
+        {
+            playerHealth.TakeDamage();
+            Debug.Log("El enemigo ha dañado al jugador.");
         }
     }
 
@@ -234,32 +243,5 @@ public class EnemyController : MonoBehaviour
         {
             player.UnregisterEnemy(this);
         }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage();
-            }
-        }
-    }
-
-    private void DealDamageToPlayer()
-    {
-        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-        if (playerHealth != null ) // Verifica invulnerabilidad
-        {
-            playerHealth.TakeDamage();
-        }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 }
