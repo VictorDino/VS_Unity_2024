@@ -2873,7 +2873,7 @@ Transform:
   - {fileID: 3624341417057215452}
   - {fileID: 8272674640763102833}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6762934719159067014
 Animator:
@@ -2931,15 +2931,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974e6be52c7a3014fad80077a799bf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 3
+  enemyType: 2
   player: {fileID: 0}
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   detectionRadius: 5
-  interactionRadius: 15
+  interactionRadius: 25
   stopChaseDistance: 10
   animator: {fileID: 6762934719159067014}
   exclamationHUD: {fileID: 3564331290773484016}
@@ -2978,6 +2980,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5270ffc461135543a4ec567e950acb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  killDistance: 1.5
 --- !u!1 &8906403591180787481
 GameObject:
   m_ObjectHideFlags: 0

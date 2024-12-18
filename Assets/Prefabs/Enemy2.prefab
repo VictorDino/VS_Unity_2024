@@ -2880,6 +2880,7 @@ GameObject:
   - component: {fileID: 6665826759415430913}
   - component: {fileID: 6357321112049381421}
   - component: {fileID: 7327598290501808286}
+  - component: {fileID: 8824133451361955617}
   - component: {fileID: 8369143115563803682}
   m_Layer: 0
   m_Name: Enemy2
@@ -2904,7 +2905,7 @@ Transform:
   - {fileID: 7526999155799508609}
   - {fileID: 8890343811118267058}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6665826759415430913
 Animator:
@@ -2964,13 +2965,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 0
   player: {fileID: 0}
-  patrolPoint1: {fileID: 0}
-  patrolPoint2: {fileID: 0}
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   detectionRadius: 5
+  interactionRadius: 25
   stopChaseDistance: 15
   animator: {fileID: 6665826759415430913}
   exclamationHUD: {fileID: 4932089501420194806}
   questionHUD: {fileID: 955489127447442180}
+--- !u!114 &8824133451361955617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9037107993639214819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5270ffc461135543a4ec567e950acb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  killDistance: 1.5
 --- !u!195 &8369143115563803682
 NavMeshAgent:
   m_ObjectHideFlags: 0

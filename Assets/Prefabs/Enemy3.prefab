@@ -2684,6 +2684,7 @@ GameObject:
   - component: {fileID: 2768142304905667924}
   - component: {fileID: 2415605523009908285}
   - component: {fileID: 1772659386761096775}
+  - component: {fileID: 2186470237034045308}
   - component: {fileID: 6474850851030867926}
   - component: {fileID: 1172804927557360302}
   m_Layer: 0
@@ -2709,7 +2710,7 @@ Transform:
   - {fileID: 7292387992904024539}
   - {fileID: 5174588631996415029}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2415605523009908285
 Animator:
@@ -2755,6 +2756,19 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.77, z: 0}
+--- !u!114 &2186470237034045308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8497267427339969207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5270ffc461135543a4ec567e950acb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  killDistance: 1.5
 --- !u!114 &6474850851030867926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2769,9 +2783,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 1
   player: {fileID: 0}
-  patrolPoint1: {fileID: 0}
-  patrolPoint2: {fileID: 0}
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   detectionRadius: 5
+  interactionRadius: 25
   stopChaseDistance: 15
   animator: {fileID: 2415605523009908285}
   exclamationHUD: {fileID: 1857390800574713481}

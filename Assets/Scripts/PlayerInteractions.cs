@@ -201,6 +201,11 @@ public class PlayerInteractions : MonoBehaviour
         }
     }
 
+    public bool IsTransformed()
+    {
+        return isTransformed;
+    }
+
     public void RegisterEnemy(EnemyController enemy)
     {
         if (!enemies.Contains(enemy))
