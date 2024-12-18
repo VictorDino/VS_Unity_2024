@@ -58,11 +58,6 @@ public class EnemyController : MonoBehaviour
         {
             ShowExclamationHUD();
             ChasePlayer();
-
-            if (Vector3.Distance(transform.position, player.position) <= agent.stoppingDistance)
-            {
-                DealDamageToPlayer();
-            }
         }
         else
         {
@@ -199,17 +194,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void DealDamageToPlayer()
-    {
-        PlayerHealth playerHealth = player.GetComponent<PlayerHealth>();
-        if (playerHealth != null && !playerHealth.isInvulnerable) // Solo inflige daño si el jugador no es invulnerable
-        {
-            playerHealth.TakeDamage();
-            Debug.Log("El enemigo ha dañado al jugador.");
-        }
-    }
-
-    void ShowExclamationHUD()
+     void ShowExclamationHUD()
     {
         if (exclamationHUD) exclamationHUD.SetActive(true);
         if (questionHUD) questionHUD.SetActive(false);

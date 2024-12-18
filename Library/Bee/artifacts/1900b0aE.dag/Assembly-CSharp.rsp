@@ -118,6 +118,7 @@
 -define:ENABLE_TIMELINE
 -define:ENABLE_LEGACY_INPUT_MANAGER
 -define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+-define:UNITY_POST_PROCESSING_STACK_V2
 -define:CSHARP_7_OR_LATER
 -define:CSHARP_7_3_OR_NEWER
 -r:"C:/Program Files/Unity/Hub/Editor/2022.3.3f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
@@ -329,6 +330,8 @@
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Navigation.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Navigation.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.AI.Navigation.Updater.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Postprocessing.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Unity.Postprocessing.Runtime.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.ref.dll"
@@ -343,11 +346,11 @@
 "Assets/Scripts/CameraFollow.cs"
 "Assets/Scripts/DoorController.cs"
 "Assets/Scripts/EnemyController.cs"
+"Assets/Scripts/EnemyDealDamage.cs"
 "Assets/Scripts/InteractablesHUD.cs"
 "Assets/Scripts/KeyInteraction.cs"
 "Assets/Scripts/MainMenu.cs"
 "Assets/Scripts/ObjectInteract.cs"
-"Assets/Scripts/PlayerHealth.cs"
 "Assets/Scripts/PlayerInteractions.cs"
 "Assets/Scripts/PlayerKeyManager.cs"
 "Assets/Scripts/PlayerMovement.cs"

@@ -2849,6 +2849,7 @@ GameObject:
   - component: {fileID: 2269402242930852570}
   - component: {fileID: 4974739138027382416}
   - component: {fileID: 8572507682852171388}
+  - component: {fileID: 7334323696012046182}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -2872,7 +2873,7 @@ Transform:
   - {fileID: 3624341417057215452}
   - {fileID: 8272674640763102833}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6762934719159067014
 Animator:
@@ -2930,13 +2931,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974e6be52c7a3014fad80077a799bf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 2
+  enemyType: 3
   player: {fileID: 0}
-  patrolPoint1: {fileID: 0}
-  patrolPoint2: {fileID: 0}
-  playerDetectionRadius: 10
-  interactionDetectionRadius: 8
-  stopChaseDistance: 15
+  patrolPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  detectionRadius: 5
+  interactionRadius: 15
+  stopChaseDistance: 10
   animator: {fileID: 6762934719159067014}
   exclamationHUD: {fileID: 3564331290773484016}
   questionHUD: {fileID: 3260399812660916397}
@@ -2962,6 +2966,18 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &7334323696012046182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8869715485150164473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5270ffc461135543a4ec567e950acb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8906403591180787481
 GameObject:
   m_ObjectHideFlags: 0

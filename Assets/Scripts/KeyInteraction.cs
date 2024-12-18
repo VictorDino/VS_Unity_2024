@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class KeyInteraction : MonoBehaviour
 {
-
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        PlayerKeyManager keyManager = other.GetComponent<PlayerKeyManager>();
+        if (keyManager != null)
         {
-            PlayerKeyManager playerKeyManager = other.GetComponent<PlayerKeyManager>();
-            if (playerKeyManager != null)
-            {
-                playerKeyManager.CollectKey(); // Notificar al jugador que ha recogido una llave
-                Destroy(gameObject); // Destruir la llave
-            }
+            keyManager.AddKey();
+            Destroy(gameObject); // Destruye la llave tras recogerla
         }
     }
 }

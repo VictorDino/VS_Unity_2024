@@ -1,55 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UI; // Necesario para trabajar con la UI
 
 public class PlayerKeyManager : MonoBehaviour
 {
-    public int totalKeys = 4; // Total de llaves necesarias para abrir la puerta
-    private int collectedKeys = 0; // Llaves recolectadas por el jugador
-    public Text keysCounterText; // Texto del HUD para mostrar las llaves recolectadas
-    public Animator doorAnimator; // Animator de la puerta
+    public int keysCollected = 0; // Número de llaves recogidas por el jugador
+    public Text keyCountText; // Referencia al Text UI donde se mostrarán las llaves
 
     void Start()
     {
-        UpdateKeysCounter();
+        UpdateKeyHUD(); // Actualizar el HUD al inicio
     }
 
-    public void CollectKey()
+    public void AddKey()
     {
-        collectedKeys++;
-        UpdateKeysCounter();
-
-        if (collectedKeys >= totalKeys)
-        {
-            OpenExitDoor();
-        }
+        keysCollected++;
+        UpdateKeyHUD(); // Actualizar el HUD al recoger una llave
     }
 
-    private void UpdateKeysCounter()
+    private void UpdateKeyHUD()
     {
-        if (keysCounterText != null)
+        if (keyCountText != null)
         {
-            keysCounterText.text = $"{collectedKeys} / {totalKeys}";
+            keyCountText.text = keysCollected.ToString(); // Actualizar el texto del HUD
         }
-    }
-
-    private void OpenExitDoor()
-    {
-        if (doorAnimator != null)
-        {
-            Debug.Log("¡Todas las llaves recolectadas! Activando animación de la puerta...");
-            doorAnimator.SetTrigger("Open"); // Activa el trigger para la animación de apertura
-        }
-        else
-        {
-            Debug.LogWarning("No se asignó el Animator de la puerta.");
-        }
-    }
-
-    public void ResetKeys()
-    {
-        collectedKeys = 0;
-        UpdateKeysCounter();
     }
 }

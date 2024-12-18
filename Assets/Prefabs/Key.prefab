@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 5200693037863831894}
   m_Layer: 0
   m_Name: Key
-  m_TagString: Untagged
+  m_TagString: Key
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -316,7 +316,7 @@ Transform:
   - {fileID: 7337347841136853023}
   - {fileID: 1259701209310252355}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!135 &4665023618695989691
 SphereCollider:
