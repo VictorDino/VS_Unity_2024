@@ -46,6 +46,11 @@ public class PlayerMovement : MonoBehaviour
         // Crear un vector de movimiento en el plano XZ
         Vector3 move = new Vector3(x, 0, z);
 
+        if (move.magnitude > 1f)
+        {
+            move = move.normalized;
+        }
+
         if (move.magnitude > 0.1f)
         {
             // Rotar el jugador hacia la dirección del movimiento

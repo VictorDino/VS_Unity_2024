@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInteractions : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class PlayerInteractions : MonoBehaviour
     private CharacterController characterController; // CharacterController del jugador
 
     private Vector3 originalPosition; // Posición original del jugador
+
+    public GameObject objectMessageText;
+    public GameObject transformIndicatorPrefab;
+    private GameObject activeIndicator;
 
     private List<EnemyController> enemies = new List<EnemyController>(); // Lista de enemigos
     private Dictionary<GameObject, Material> originalMaterials = new Dictionary<GameObject, Material>(); // Guardar materiales originales
@@ -122,6 +127,32 @@ public class PlayerInteractions : MonoBehaviour
             characterController.enabled = false;
 
             isTransformed = true;
+            objectMessageText.SetActive(true);
+            if (transformIndicatorPrefab != null && transformedObject != null)
+            {
+                activeIndicator = Instantiate(transformIndicatorPrefab);
+
+                float heightOffset = 2f;
+
+                Bounds bounds = new Bounds(transformedObject.transform.position, Vector3.zero);
+                Renderer[] renderers = transformedObject.GetComponentsInChildren<Renderer>();
+
+                if (renderers.Length > 0)
+                {
+                    bounds = renderers[0].bounds;
+                    foreach (Renderer r in renderers)
+                    {
+                        bounds.Encapsulate(r.bounds);
+                    }
+
+                    // altura desde el centro + mitad de la altura + margen extra
+                    float topY = bounds.center.y + bounds.extents.y;
+                    heightOffset = topY - transformedObject.transform.position.y + 0.3f;
+                }
+
+                activeIndicator.transform.SetParent(transformedObject.transform);
+                activeIndicator.transform.localPosition = new Vector3(0, heightOffset, 0);
+            }
             Debug.Log("Jugador transformado en: " + transformedObject.name);
 
             NotifyEnemies(true);
@@ -141,6 +172,8 @@ public class PlayerInteractions : MonoBehaviour
             transform.position = originalPosition;
 
             isTransformed = false;
+            objectMessageText.SetActive(false);
+            Destroy(activeIndicator);
             Debug.Log("Jugador ha vuelto a su forma original.");
 
             NotifyEnemies(false);
