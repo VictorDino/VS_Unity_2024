@@ -5,6 +5,7 @@ using UnityEngine;
 public class ActivationPlatform : MonoBehaviour
 {
     public GameObject objectToDestroy; // El objeto que será destruido, por ejemplo, una pared
+    public AudioClip activationSound;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -12,6 +13,8 @@ public class ActivationPlatform : MonoBehaviour
         {
             if (objectToDestroy != null)
             {
+                AudioSource audioSource = other.GetComponent<AudioSource>();
+                audioSource.PlayOneShot(activationSound);
                 Destroy(objectToDestroy); // Destruye el objeto
                 Debug.Log("¡El objeto ha sido destruido por el enemigo!");
             }

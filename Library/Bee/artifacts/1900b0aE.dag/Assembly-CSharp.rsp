@@ -354,6 +354,7 @@
 "Assets/Scripts/KeyInteraction.cs"
 "Assets/Scripts/MainMenu.cs"
 "Assets/Scripts/MetalicDoorController.cs"
+"Assets/Scripts/Minimap.cs"
 "Assets/Scripts/ObjectInteract.cs"
 "Assets/Scripts/OptionsMenu.cs"
 "Assets/Scripts/PauseMenu.cs"

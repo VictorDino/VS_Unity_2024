@@ -9,6 +9,10 @@ public class PlayerInteractions : MonoBehaviour
     public float transformationRadius = 5f; // Radio para buscar objetos transformables
     public Material emissionMaterial; // Material con emisión para destacar objetos
 
+    public AudioSource audioSource;           // El AudioSource del jugador
+    public AudioClip lightSoundClip;          // Sonido al activar luz
+    public AudioClip particleSoundClip;       // Sonido al activar particulas
+
     private GameObject transformedObject; // Objeto en el que se transforma el jugador
     private bool isTransformed = false; // Estado de transformación
 
@@ -18,7 +22,7 @@ public class PlayerInteractions : MonoBehaviour
     private Vector3 originalPosition; // Posición original del jugador
 
     public GameObject objectMessageText;
-    public GameObject transformIndicatorPrefab;
+    public GameObject indicatorPrefab;
     private GameObject activeIndicator;
 
     private List<EnemyController> enemies = new List<EnemyController>(); // Lista de enemigos
@@ -128,31 +132,12 @@ public class PlayerInteractions : MonoBehaviour
 
             isTransformed = true;
             objectMessageText.SetActive(true);
-            if (transformIndicatorPrefab != null && transformedObject != null)
-            {
-                activeIndicator = Instantiate(transformIndicatorPrefab);
-
-                float heightOffset = 2f;
-
-                Bounds bounds = new Bounds(transformedObject.transform.position, Vector3.zero);
-                Renderer[] renderers = transformedObject.GetComponentsInChildren<Renderer>();
-
-                if (renderers.Length > 0)
-                {
-                    bounds = renderers[0].bounds;
-                    foreach (Renderer r in renderers)
-                    {
-                        bounds.Encapsulate(r.bounds);
-                    }
-
-                    // altura desde el centro + mitad de la altura + margen extra
-                    float topY = bounds.center.y + bounds.extents.y;
-                    heightOffset = topY - transformedObject.transform.position.y + 0.3f;
-                }
-
-                activeIndicator.transform.SetParent(transformedObject.transform);
-                activeIndicator.transform.localPosition = new Vector3(0, heightOffset, 0);
-            }
+            
+            float heightOffset = 1.3f; // Altura fija
+            activeIndicator = Instantiate(indicatorPrefab);
+            activeIndicator.transform.SetParent(transformedObject.transform);
+            activeIndicator.transform.localPosition = new Vector3(0, heightOffset, 0);
+            activeIndicator.transform.localRotation = Quaternion.identity;
             Debug.Log("Jugador transformado en: " + transformedObject.name);
 
             NotifyEnemies(true);
@@ -193,6 +178,7 @@ public class PlayerInteractions : MonoBehaviour
             Light lightComponent = transformedObject.GetComponentInChildren<Light>();
             lightComponent.enabled = !lightComponent.enabled;
             interactionType = "Light";
+            audioSource.PlayOneShot(lightSoundClip);
             Debug.Log("Luz alternada en el objeto transformado.");
         }
         else if (transformedObject.CompareTag("Particles"))
@@ -200,6 +186,7 @@ public class PlayerInteractions : MonoBehaviour
             ParticleSystem particles = transformedObject.GetComponentInChildren<ParticleSystem>();
             if (particles.isPlaying) particles.Stop(); else particles.Play();
             interactionType = "Particles";
+            audioSource.PlayOneShot(particleSoundClip);
             Debug.Log("Partículas alternadas en el objeto transformado.");
         }
         else if (transformedObject.CompareTag("Sound"))
