@@ -36,6 +36,8 @@ public class PlayerInteractions : MonoBehaviour
 
     void Update()
     {
+        if (GameState.GameIsPaused) return;
+
         HighlightNearbyObjects();
 
         // Transformar o revertir con el clic izquierdo del ratón
@@ -132,11 +134,11 @@ public class PlayerInteractions : MonoBehaviour
 
             isTransformed = true;
             objectMessageText.SetActive(true);
-            
-            float heightOffset = 1.3f; // Altura fija
+
+            Transform indicatorPoint = transformedObject.transform.Find("IndicatorPoint");
             activeIndicator = Instantiate(indicatorPrefab);
-            activeIndicator.transform.SetParent(transformedObject.transform);
-            activeIndicator.transform.localPosition = new Vector3(0, heightOffset, 0);
+            activeIndicator.transform.SetParent(indicatorPoint);
+            activeIndicator.transform.localPosition = Vector3.zero;
             activeIndicator.transform.localRotation = Quaternion.identity;
             Debug.Log("Jugador transformado en: " + transformedObject.name);
 

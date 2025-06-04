@@ -350,6 +350,7 @@
 "Assets/Scripts/DoorController.cs"
 "Assets/Scripts/EnemyController.cs"
 "Assets/Scripts/EnemyDealDamage.cs"
+"Assets/Scripts/GameState.cs"
 "Assets/Scripts/InteractablesHUD.cs"
 "Assets/Scripts/KeyInteraction.cs"
 "Assets/Scripts/MainMenu.cs"

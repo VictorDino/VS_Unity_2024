@@ -52,29 +52,23 @@ public class PauseMenu : MonoBehaviour
         Application.Quit(); // Salir del juego
     }
 
-    public void ResumeGame()
-    {
-        pauseMenuUI.SetActive(false);
-        Time.timeScale = 1f; // Reanudar el tiempo
-        isPaused = false;
-
-        // Reactivar los inputs del jugador
-        if (playerMovement != null)
-        {
-            playerMovement.enabled = true;
-        }
-    }
-
     private void PauseGame()
     {
         pauseMenuUI.SetActive(true);
-        Time.timeScale = 0f; // Detener el tiempo
+        Time.timeScale = 0f;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        GameState.GameIsPaused = true;
         isPaused = true;
+    }
 
-        // Desactivar los inputs del jugador
-        if (playerMovement != null)
-        {
-            playerMovement.enabled = false;
-        }
+    public void ResumeGame()
+    {
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        GameState.GameIsPaused = false;
+        isPaused = false;
     }
 }
