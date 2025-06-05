@@ -24,6 +24,10 @@ public class EnemyController : MonoBehaviour
     private bool isPlayerTransformed = false;
     private bool isVigilating = false;
 
+    public AudioSource audioSource;
+    public AudioClip vigilateClip;
+    public AudioClip chaseClip;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -65,6 +69,7 @@ public class EnemyController : MonoBehaviour
             if (PlayerInDetectionRadius())
             {
                 StartChasingPlayer();
+               
             }
             else
             {
@@ -90,6 +95,8 @@ public class EnemyController : MonoBehaviour
     {
         isChasing = true;
         ShowExclamationHUD();
+        audioSource.clip = chaseClip;
+        audioSource.Play();
         animator.SetFloat("Speed", 1);
     }
 
@@ -161,6 +168,8 @@ public class EnemyController : MonoBehaviour
     {
         isVigilating = true;
         ShowQuestionHUD();
+        audioSource.clip = vigilateClip;
+        audioSource.PlayOneShot(vigilateClip);
 
         agent.SetDestination(objectToVigilate.position);
 
