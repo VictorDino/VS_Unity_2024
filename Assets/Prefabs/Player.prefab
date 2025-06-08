@@ -526,6 +526,8 @@ MonoBehaviour:
   audioSource: {fileID: 5158289701234115739}
   lightSoundClip: {fileID: 8300000, guid: c45166356a621e44baf79d54f9713e04, type: 3}
   particleSoundClip: {fileID: 8300000, guid: 5c536b55c38396b409d0c3315d86e7aa, type: 3}
+  transformSoundClip: {fileID: 8300000, guid: 888c483fc52b8c24e8a347b3412de11b, type: 3}
+  transformationParticlesPrefab: {fileID: 1519251792585198999, guid: 2df8d43572a97c54b86127962b9b8511, type: 3}
   objectMessageText: {fileID: 583237284244842246}
   indicatorPrefab: {fileID: 4572442386313881433, guid: e340ab610461c3544ab7122d11ecd4e6, type: 3}
 --- !u!114 &1083048959916960973
@@ -551,7 +553,7 @@ AudioSource:
   m_GameObject: {fileID: 1656446371075492631}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -3548382411533795365, guid: 08d62b78640e68b4ea2d0dafab54ddcd, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1

@@ -1583,13 +1583,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseMenu
       objectReference: {fileID: 0}
-    - target: {fileID: 56688719123436083, guid: 56527e65e5a8b2646b4c8edade331985, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3165252210261026013, guid: 56527e65e5a8b2646b4c8edade331985, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4592746599920170421, guid: 56527e65e5a8b2646b4c8edade331985, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561265560613067080, guid: 56527e65e5a8b2646b4c8edade331985, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7675142650012433016, guid: 56527e65e5a8b2646b4c8edade331985, type: 3}
       propertyPath: m_RootOrder
@@ -1637,7 +1641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8053711509492409677, guid: 56527e65e5a8b2646b4c8edade331985, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1839,6 +1843,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1364417413}
     m_Modifications:
+    - target: {fileID: 195437589974351512, guid: 1405dfa0c4f980a40889eef558c1b909, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -3548382411533795365, guid: 08d62b78640e68b4ea2d0dafab54ddcd, type: 2}
     - target: {fileID: 2791195729866660744, guid: 1405dfa0c4f980a40889eef558c1b909, type: 3}
       propertyPath: m_Name
       value: OpenDoor
@@ -8165,6 +8173,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ObjectSound
       objectReference: {fileID: 0}
+    - target: {fileID: 8716775368100011844, guid: eabf4378e0e6eec4988e3a276b6cd8be, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -3548382411533795365, guid: 08d62b78640e68b4ea2d0dafab54ddcd, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

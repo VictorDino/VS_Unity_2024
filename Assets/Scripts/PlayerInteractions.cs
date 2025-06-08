@@ -11,7 +11,9 @@ public class PlayerInteractions : MonoBehaviour
 
     public AudioSource audioSource;           // El AudioSource del jugador
     public AudioClip lightSoundClip;          // Sonido al activar luz
-    public AudioClip particleSoundClip;       // Sonido al activar particulas
+    public AudioClip particleSoundClip;// Sonido al activar particulas
+    public AudioClip transformSoundClip;
+    public GameObject transformationParticlesPrefab;
 
     private GameObject transformedObject; // Objeto en el que se transforma el jugador
     private bool isTransformed = false; // Estado de transformación
@@ -127,7 +129,8 @@ public class PlayerInteractions : MonoBehaviour
             {
                 RestoreOriginalMaterial(transformedObject);
             }
-
+            Instantiate(transformationParticlesPrefab, transform.position, Quaternion.identity);
+            audioSource.PlayOneShot(transformSoundClip);
             originalPosition = transform.position;
             playerRenderer.enabled = false;
             characterController.enabled = false;
