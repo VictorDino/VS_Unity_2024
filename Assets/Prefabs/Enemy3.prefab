@@ -2796,7 +2796,7 @@ Transform:
   - {fileID: 5174588631996415029}
   - {fileID: 4264514317237591925}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2415605523009908285
 Animator:
@@ -2855,6 +2855,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killDistance: 1.5
+  deathSound: {fileID: 8300000, guid: 34599d5c5264b084299497ae215bf9c2, type: 3}
+  deathOverlay: {fileID: 2330572633788932779, guid: 350e46bf13cc9c3439ea3f05a413536c, type: 3}
+  fadeDuration: 0.5
 --- !u!114 &6474850851030867926
 MonoBehaviour:
   m_ObjectHideFlags: 0

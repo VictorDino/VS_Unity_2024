@@ -11,6 +11,7 @@ TagManager:
   - Enemy
   - Door
   - Key
+  - SpecialObject
   layers:
   - Default
   - TransparentFX

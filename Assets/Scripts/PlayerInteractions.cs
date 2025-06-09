@@ -26,6 +26,7 @@ public class PlayerInteractions : MonoBehaviour
     public GameObject objectMessageText;
     public GameObject indicatorPrefab;
     private GameObject activeIndicator;
+    public GameObject specialObjectText;
 
     private List<EnemyController> enemies = new List<EnemyController>(); // Lista de enemigos
     private Dictionary<GameObject, Material> originalMaterials = new Dictionary<GameObject, Material>(); // Guardar materiales originales
@@ -137,6 +138,10 @@ public class PlayerInteractions : MonoBehaviour
 
             isTransformed = true;
             objectMessageText.SetActive(true);
+            if (transformedObject.CompareTag("SpecialObject"))
+            {
+                specialObjectText.SetActive(true);
+            }
 
             Transform indicatorPoint = transformedObject.transform.Find("IndicatorPoint");
             activeIndicator = Instantiate(indicatorPrefab);
@@ -163,6 +168,7 @@ public class PlayerInteractions : MonoBehaviour
 
             isTransformed = false;
             objectMessageText.SetActive(false);
+            specialObjectText.SetActive(false);
             Destroy(activeIndicator);
             Debug.Log("Jugador ha vuelto a su forma original.");
 

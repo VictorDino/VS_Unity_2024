@@ -2959,7 +2959,7 @@ Transform:
   - {fileID: 3624341417057215452}
   - {fileID: 1476765569400035747}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6762934719159067014
 Animator:
@@ -3017,14 +3017,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 974e6be52c7a3014fad80077a799bf94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 3
+  enemyType: 2
   player: {fileID: 0}
   patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  detectionRadius: 5
+  detectionRadius: 15
   interactionRadius: 25
   stopChaseDistance: 10
   animator: {fileID: 6762934719159067014}
@@ -3068,6 +3068,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killDistance: 1.5
+  deathSound: {fileID: 8300000, guid: 34599d5c5264b084299497ae215bf9c2, type: 3}
+  deathOverlay: {fileID: 2330572633788932779, guid: 350e46bf13cc9c3439ea3f05a413536c, type: 3}
+  fadeDuration: 0.5
 --- !u!82 &-6944449100105610985
 AudioSource:
   m_ObjectHideFlags: 0

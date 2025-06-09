@@ -2991,7 +2991,7 @@ Transform:
   - {fileID: 7633289333664562587}
   - {fileID: 1213089954080733752}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &6665826759415430913
 Animator:
@@ -3078,6 +3078,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   killDistance: 1.5
+  deathSound: {fileID: 0}
+  deathOverlay: {fileID: 2330572633788932779, guid: 350e46bf13cc9c3439ea3f05a413536c, type: 3}
+  fadeDuration: 0.5
 --- !u!195 &8369143115563803682
 NavMeshAgent:
   m_ObjectHideFlags: 0

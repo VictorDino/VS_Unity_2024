@@ -35,7 +35,7 @@ Transform:
   m_Children:
   - {fileID: 9199733286256815572}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5764838208286843040
 MeshFilter:
@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 5992123314352799050}
   - component: {fileID: 4450476560455011515}
   m_Layer: 0
-  m_Name: Light
+  m_Name: ChildPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

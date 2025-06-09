@@ -11,11 +11,13 @@ public class ActivationPlatform : MonoBehaviour
     {
         if (other.CompareTag("Enemy")) // Verifica si el objeto que entra es un enemigo
         {
+            Transform childToDestroy = transform.Find("ChildPlatform");
             if (objectToDestroy != null)
             {
                 AudioSource audioSource = other.GetComponent<AudioSource>();
                 audioSource.PlayOneShot(activationSound);
                 Destroy(objectToDestroy); // Destruye el objeto
+                Destroy(childToDestroy.gameObject);
                 Debug.Log("¡El objeto ha sido destruido por el enemigo!");
             }
         }
